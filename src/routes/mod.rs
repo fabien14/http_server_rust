@@ -1,3 +1,3 @@
-pub mod devices;
+mod devices;
 
 pub use devices::{ Info, devices, device };
