@@ -540,7 +540,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "http_server"
+name = "http_server_rust"
 version = "0.1.0"
 dependencies = [
  "actix-web",

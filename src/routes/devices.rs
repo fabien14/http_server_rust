@@ -12,18 +12,19 @@ struct Devices {
 }
 
 #[derive(Deserialize)]
-struct Info {
+pub struct Info {
     device_name: String,
 }
 
 pub async fn devices() -> Result<impl Responder> {
+    let dev = vec![
+        Device { name: "ble".to_string() },
+        Device { name: "div".to_string() }
+    ];
 
-    let devices_list_struct: Devices =  {
-        devices: vec![
-            Device { name: "ble".to_string() }, 
-            Device { name: "div".to_string() }
-        ]
-    } ;
+    let devices_list_struct = Devices {
+        devices: dev
+    };
 
     Ok(web::Json(devices_list_struct))
 }
