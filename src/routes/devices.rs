@@ -52,7 +52,7 @@ pub async fn device(info: web::Path<Info>, data: web::Data<Devices>) -> Result<i
         .find(|device| device.name == info.device_name)
     {
         Some(device) => device.clone(),
-        _ => Device {
+        None => Device {
             name: String::from("NA"),
             adress: [0, 0, 0, 0, 0, 0],
             states: HashMap::new(),
@@ -77,7 +77,7 @@ pub async fn device_states(
         .find(|device| device.name == info.device_name)
     {
         Some(device) => device.states.clone(),
-        _ => HashMap::new(),
+        None => HashMap::new(),
     };
 
     let device_states_serialized = DeviceStatesSerialize {
