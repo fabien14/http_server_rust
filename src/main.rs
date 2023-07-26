@@ -1,14 +1,14 @@
-mod routes;
 mod framework_ble;
+mod routes;
 
 use actix_web::{web, App, HttpServer};
-use routes::{ Devices, devices, device, device_states };
 use framework_ble::Device;
+use routes::{device, device_states, devices, Devices};
 use std::collections::HashMap;
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
-    let device_ble_chambre = Device { 
+    let device_ble_chambre = Device {
         name: String::from("led_chambre"),
         adress: [1, 2, 3, 4, 5, 6],
         states: HashMap::from([
@@ -17,7 +17,7 @@ async fn main() -> std::io::Result<()> {
             (String::from("where"), String::from("1011")),
         ]),
     };
-    let device_ble_couloir = Device { 
+    let device_ble_couloir = Device {
         name: String::from("led_couloir"),
         adress: [20, 12, 43, 24, 5, 86],
         states: HashMap::from([
@@ -28,18 +28,18 @@ async fn main() -> std::io::Result<()> {
     };
 
     let device_list = Devices {
-        devices: vec![
-            device_ble_chambre, 
-            device_ble_couloir,
-        ]
+        devices: vec![device_ble_chambre, device_ble_couloir],
     };
 
     HttpServer::new(move || {
         App::new()
-        .route("/devices", web::get().to(devices))
-        .route("/devices/{device_name}", web::get().to(device))
-        .route("/devices/{device_name}/states", web::get().to(device_states))
-        .app_data(web::Data::new(device_list.clone()))
+            .route("/devices", web::get().to(devices))
+            .route("/devices/{device_name}", web::get().to(device))
+            .route(
+                "/devices/{device_name}/states",
+                web::get().to(device_states),
+            )
+            .app_data(web::Data::new(device_list.clone()))
     })
     .bind(("127.0.0.1", 8080))?
     .run()

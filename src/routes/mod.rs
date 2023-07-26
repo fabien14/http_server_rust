@@ -1,3 +1,3 @@
 mod devices;
 
-pub use devices::{ Devices, devices, device, device_states };
+pub use devices::{device, device_states, devices, Devices};
