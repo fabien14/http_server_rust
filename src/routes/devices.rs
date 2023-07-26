@@ -54,7 +54,7 @@ pub async fn device(info: web::Path<Info>, data: web::Data<Devices>) -> Result<i
         Some(device) => device.clone(),
         _ => Device {
             name: String::from("NA"),
-            adress: [0, 0, 0, 0, 0, 0],
+            address: [0, 0, 0, 0, 0, 0],
             states: HashMap::new(),
         },
     };
