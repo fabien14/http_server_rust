@@ -10,7 +10,7 @@ use std::collections::HashMap;
 async fn main() -> std::io::Result<()> {
     let device_ble_chambre = Device {
         name: String::from("led_chambre"),
-        adress: [1, 2, 3, 4, 5, 6],
+        address: [1, 2, 3, 4, 5, 6],
         states: HashMap::from([
             (String::from("color"), String::from("#FFFFFF")),
             (String::from("lightless"), String::from("100")),
@@ -19,7 +19,7 @@ async fn main() -> std::io::Result<()> {
     };
     let device_ble_couloir = Device {
         name: String::from("led_couloir"),
-        adress: [20, 12, 43, 24, 5, 86],
+        address: [20, 12, 43, 24, 5, 86],
         states: HashMap::from([
             (String::from("color"), String::from("#000000")),
             (String::from("lightless"), String::from("90")),
