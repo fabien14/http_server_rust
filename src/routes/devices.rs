@@ -1,12 +1,17 @@
-use crate::framework_ble::Device;
+use crate::framework_ble::{Device, DeviceName, DeviceStates};
 
 use actix_web::{web, Responder, Result};
-use serde::{Deserialize, Serialize};
+use serde::Serialize;
 use std::collections::HashMap;
 
-#[derive(Clone, Serialize)]
+#[derive(Clone)]
 pub struct Devices {
     pub devices: Vec<Device>,
+}
+
+#[derive(Clone, Serialize)]
+pub struct DevicesSerializer {
+    pub devices: Vec<DeviceName>,
 }
 
 #[derive(Serialize)]
@@ -14,61 +19,48 @@ struct DeviceStatesSerialize {
     states: HashMap<String, String>,
 }
 
-#[derive(Deserialize)]
-pub struct Info {
-    device_name: String,
-}
-
 pub async fn devices(data: web::Data<Devices>) -> Result<impl Responder> {
     let device_list_data = &data.devices;
 
-    let mut dev: Vec<Device> = Vec::new();
+    let mut dev: Vec<DeviceName> = Vec::new();
     for d in device_list_data {
-        dev.push(Device::default_with_name(d.name.clone()));
+        dev.push(d.name.clone());
     }
 
-    let devices_list_struct = Devices { devices: dev };
+    let devices_list_struct = DevicesSerializer { devices: dev };
 
     Ok(web::Json(devices_list_struct))
 }
 
-pub async fn device(info: web::Path<Info>, data: web::Data<Devices>) -> Result<impl Responder> {
+pub async fn device(info: web::Path<DeviceName>, data: web::Data<Devices>) -> Result<impl Responder> {
     let device_list_data = &data.devices;
 
-    let device = match device_list_data
+    let device_name = match device_list_data
         .into_iter()
-        .find(|device| device.name == info.device_name)
+        .find(|device| device.name == info.clone())
     {
-        Some(device) => device.clone(),
-        None => Device {
-            name: String::from("NA"),
-            address: [0, 0, 0, 0, 0, 0],
-            states: HashMap::new(),
-        },
+        Some(device) => device.name.clone(),
+        None => DeviceName(String::from("NA")),
     };
 
-    let device_serialized = Device::default_with_name(device.name.clone());
+    let device_serialized = device_name;
 
     Ok(web::Json(device_serialized))
 }
 
 pub async fn device_states(
-    info: web::Path<Info>,
+    info: web::Path<DeviceName>,
     data: web::Data<Devices>,
 ) -> Result<impl Responder> {
     let device_list_data = &data.devices;
 
     let device_states = match device_list_data
         .into_iter()
-        .find(|device| device.name == info.device_name)
+        .find(|device| device.name == info.clone())
     {
         Some(device) => device.states.clone(),
-        None => HashMap::new(),
+        None => DeviceStates(HashMap::new()),
     };
 
-    let device_states_serialized = DeviceStatesSerialize {
-        states: device_states,
-    };
-
-    Ok(web::Json(device_states_serialized))
+    Ok(web::Json(device_states))
 }

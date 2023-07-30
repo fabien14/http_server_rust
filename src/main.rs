@@ -2,29 +2,29 @@ mod framework_ble;
 mod routes;
 
 use actix_web::{web, App, HttpServer};
-use framework_ble::Device;
+use framework_ble::{Device, DeviceName, DeviceStates, DeviceAddress, DeviceColor};
 use routes::{device, device_states, devices, Devices};
 use std::collections::HashMap;
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
     let device_ble_chambre = Device {
-        name: String::from("led_chambre"),
-        address: [1, 2, 3, 4, 5, 6],
-        states: HashMap::from([
-            (String::from("color"), String::from("#FFFFFF")),
-            (String::from("lightless"), String::from("100")),
-            (String::from("where"), String::from("1011")),
-        ]),
+        name: DeviceName(String::from("led_chambre")),
+        address: DeviceAddress([1, 2, 3, 4, 5, 6]),
+        states: DeviceStates(HashMap::from([
+            (String::from("color"), DeviceColor(String::from("#FFFFFF"))),
+            (String::from("lightless"), DeviceColor(String::from("100"))),
+            (String::from("where"), DeviceColor(String::from("1011"))),
+        ])),
     };
     let device_ble_couloir = Device {
-        name: String::from("led_couloir"),
-        address: [20, 12, 43, 24, 5, 86],
-        states: HashMap::from([
-            (String::from("color"), String::from("#000000")),
-            (String::from("lightless"), String::from("90")),
-            (String::from("where"), String::from("0011")),
-        ]),
+        name: DeviceName(String::from("led_couloir")),
+        address: DeviceAddress([20, 12, 43, 24, 5, 86]),
+        states: DeviceStates(HashMap::from([
+            (String::from("color"), DeviceColor(String::from("#000000"))),
+            (String::from("lightless"), DeviceColor(String::from("90"))),
+            (String::from("where"), DeviceColor(String::from("0011"))),
+        ])),
     };
 
     let device_list = Devices {

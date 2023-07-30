@@ -1,19 +1,28 @@
-use serde::Serialize;
+use serde::{Serialize, Deserialize};
 use std::collections::HashMap;
 
-#[derive(Clone, Debug, Serialize, Default)]
-pub struct Device {
-    pub name: String,
-    #[serde(skip_serializing)]
-    pub address: [u8; 6],
-    #[serde(skip_serializing)]
-    pub states: HashMap<String, String>,
+#[derive(Clone, Serialize)]
+pub struct DeviceAddress(pub [u8; 6]);
+
+#[derive(Clone, Debug, Serialize, Deserialize)]
+pub struct DeviceName(pub String);
+
+impl PartialEq for DeviceName {
+    fn eq(&self, other: &Self) -> bool {
+        self.0 == other.0
+    }
 }
 
-impl Device {
-    pub fn default_with_name(name: String) -> Self {
-        let mut device = Self::default();
-        device.name = name;
-        device
-    }
+
+#[derive(Clone, Serialize, Deserialize)]
+pub struct DeviceColor(pub String);
+
+#[derive(Clone, Serialize, Deserialize)]
+pub struct DeviceStates(pub HashMap<String, DeviceColor>);
+
+#[derive(Clone)]
+pub struct Device {
+    pub name: DeviceName,
+    pub address: DeviceAddress,
+    pub states: DeviceStates,
 }
